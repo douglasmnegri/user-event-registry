@@ -1,8 +1,38 @@
 import java.util.Scanner;
+import java.time.*;
+import java.time.format.DateTimeParseException;
 
 public class Main {
     public static void main(String[] args) {
-        Scanner myObj = new Scanner(System.in);
+        Scanner Obj = new Scanner(System.in);
+        String content;
+        System.out.println("What do you want to register? Type 1 for User and 2 for Event.");
+        while (true) {
+            content = Obj.nextLine();
+            if (content.equals("1")) {
+                User newUser = User.createUserFromInput();
+                System.out.println("\nUser Information:");
+                newUser.printUserInfo();
+            } else if (content.equals("2")) {
+                Event newEvent = Event.createEventFromInput();
+                newEvent.printEventInfo();
+            }
+            else {
+                System.out.println("Invalid input.  Type 1 for User and 2 for Event.");
+            }
+        }
+    }
+}
+
+class User {
+    private String name;
+    private int age;
+    private String cpf;
+    private String email;
+    private String cellPhone;
+
+    public static User createUserFromInput() {
+        Scanner userObj = new Scanner(System.in);
         String name;
         int age;
         String cpf;
@@ -11,7 +41,7 @@ public class Main {
 
         System.out.println("Name:");
         while (true) {
-            name = myObj.nextLine();
+            name = userObj.nextLine();
             int length = name.length();
 
             if (length <= 1) {
@@ -23,40 +53,27 @@ public class Main {
 
         System.out.println("Age:");
         while (true) {
-            age = myObj.nextInt();
-            myObj.nextLine();
+            age = userObj.nextInt();
+            userObj.nextLine();
 
-            if(age < 0) {
+            if (age < 0) {
                 System.out.println("Please enter a valid age.");
-            }
-            else {
+            } else {
                 break;
             }
         }
 
         System.out.println("CPF:");
-        cpf = myObj.nextLine();
+        cpf = userObj.nextLine();
 
         System.out.println("Email:");
-        email = myObj.nextLine();
+        email = userObj.nextLine();
 
         System.out.println("Cellphone Number:");
-        cellPhone = myObj.nextLine();
+        cellPhone = userObj.nextLine();
 
-        // Create a User object with the input values
-        User newUser = new User(name, age, cpf, email, cellPhone);
-
-        // Call the printUserInfo() method to print the user's information
-        newUser.printUserInfo();
+        return new User(name, age, cpf, email, cellPhone);
     }
-}
-
-class User {
-    private String name;
-    private int age;
-    private String cpf;
-    private String email;
-    private String cellPhone;
 
     public User(String name, int age, String cpf, String email, String cellPhone) {
         this.name = name;
@@ -87,7 +104,6 @@ class User {
     }
 
     public void printUserInfo() {
-        System.out.println("\nUser Information:");
         System.out.println("Name: " + getName());
         System.out.println("Age: " + getAge());
         System.out.println("CPF: " + getCpf());
@@ -96,62 +112,100 @@ class User {
     }
 }
 
-// class Event {
-// private String eventName;
-// private String eventAddress;
-// private String eventCategory;
-// private LocalDate eventDate;
-// private String eventDescription;
+class Event {
+    private String eventName;
+    private String eventAddress;
+    private String eventCategory;
+    private LocalDate eventDate;
+    private String eventDescription;
 
-// public Event(String eventName, String eventAddress, String eventCategory,
-// LocalDate eventDate,
-// String eventDescription) {
-// this.eventName = eventName;
-// this.eventAddress = eventAddress;
-// this.eventCategory = eventCategory;
-// this.eventDate = eventDate;
-// this.eventDescription = eventDescription;
-// }
+    // Predefined array of event categories
+    private static final String[] EVENT_CATEGORIES = { "Concert", "Conference", "Seminar", "Workshop", "Exhibition",
+            "Festival", "Charity Event", "Sports Event", "Networking Event",
+            "Product Launch" };
 
-// public String getEventName() {
-// return eventName;
-// }
+    public static Event createEventFromInput() {
+        Scanner eventObj = new Scanner(System.in);
 
-// public String getEventAddress() {
-// return eventAddress;
-// }
+        System.out.println("Event Name:");
+        String eventName = eventObj.nextLine();
 
-// public String getEventCategory() {
-// return eventCategory;
-// }
+        System.out.println("Event Address:");
+        String eventAddress = eventObj.nextLine();
 
-// public LocalDate getEventDate() {
-// return eventDate;
-// }
+        // Prompt for date input
+        LocalDate eventDate;
+        while (true) {
+            System.out.println("Event Date (YYYY-MM-DD):");
+            String dateInput = eventObj.nextLine();
 
-// public String getEventDescription() {
-// return eventDescription;
-// }
+            try {
+                eventDate = LocalDate.parse(dateInput);
+                break;
+            } catch (DateTimeParseException e) {
+                System.out.println("Invalid date format. Please enter the date in YYYY-MM-DD format.");
+            }
+        }
 
-// public void printEventInfo() {
-// System.out.println("Name: " + getEventName());
-// System.out.println("Address: " + getEventAddress());
-// System.out.println("Category: " + getEventCategory());
-// System.out.println("Date: " + getEventDate());
-// System.out.println("Description: " + getEventDescription());
-// }
-// }
+        System.out.println("Event Description:");
+        String eventDescription = eventObj.nextLine();
 
-// // User newUser01 = new User("Douglas", 28, "099.999.999-89",
-// // "random-email@gmail.com", "(0XX)9 9999-8888");
-// // User newUser02 = new User("Daniel", 21, "088.888.8888-99",
-// // "daniel-mail@hotmail.com", "(0XX)9 7777-7779");
-// // System.out.println("\n - User Registration Form - ");
-// // newUser01.printUserInfo();
-// // newUser02.printUserInfo();
+        // Prompt user to select event category
+        System.out.println("Event Category:");
+        String selectedCategory;
+        while (true) {
+            // Display available categories
+            for (int i = 0; i < EVENT_CATEGORIES.length; i++) {
+                System.out.println((i + 1) + ". " + EVENT_CATEGORIES[i]);
+            }
+            int categoryIndex = eventObj.nextInt();
+            eventObj.nextLine();
 
-// // Event newEvent01 = new Event("Music Festival", "Central Park", "Music",
-// // LocalDate.of(2024, 10, 25),
-// // "Experience the best bands of the world in one place!");
-// // System.out.println("\n - List of Events -");
-// // newEvent01.printEventInfo();
+            if (categoryIndex >= 1 && categoryIndex <= EVENT_CATEGORIES.length) {
+                selectedCategory = EVENT_CATEGORIES[categoryIndex - 1];
+                break;
+            } else {
+                System.out.println("Invalid category selection. Please try again.");
+            }
+        }
+
+        return new Event(eventName, eventAddress, selectedCategory, eventDate, eventDescription);
+    }
+
+    public Event(String eventName, String eventAddress, String eventCategory, LocalDate eventDate,
+            String eventDescription) {
+        this.eventName = eventName;
+        this.eventAddress = eventAddress;
+        this.eventCategory = eventCategory;
+        this.eventDate = eventDate;
+        this.eventDescription = eventDescription;
+    }
+
+    public String getEventName() {
+        return eventName;
+    }
+
+    public String geteventAddress() {
+        return eventAddress;
+    }
+
+    public String geteventCategory() {
+        return eventCategory;
+    }
+
+    public LocalDate geteventDate() {
+        return eventDate;
+    }
+
+    public String geteventDescription() {
+        return eventDescription;
+    }
+
+    public void printEventInfo() {
+        System.out.println("Name: " + getEventName());
+        System.out.println("Address: " + geteventAddress());
+        System.out.println("Category: " + geteventCategory());
+        System.out.println("Date: " + geteventDate());
+        System.out.println("Description: " + geteventDescription());
+    }
+}
