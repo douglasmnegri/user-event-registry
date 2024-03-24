@@ -1,24 +1,91 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.time.*;
 import java.time.format.DateTimeParseException;
 
 public class Main {
+    private static final String[] SHOW_OPTIONS = { "Register User", "Register Event", "List Users", "List Events" };
+    private static final List<User> userList = new ArrayList<>();
+    private static final List<Event> eventList = new ArrayList<>();
+
+    private static void printUsers() {
+        // Hardcoded users meant for testing it out
+        if (userList.isEmpty()) {
+            System.out.println("The list of users is empty");
+
+            User user01 = new User("Alice", 35, "12345678901", "alice@example.com", "1234567890");
+            User user02 = new User("Bob", 42, "98765432109", "bob@example.com", "0987654321");
+            userList.add(user01);
+            userList.add(user02);
+
+        }
+
+        else {
+            System.out.println("\n- LIST OF USERS -\n");
+            for (User user : userList) {
+                user.printUserInfo();
+                System.out.println("");
+            }
+        }
+    }
+
+    private static void printEvents() {
+        
+        // Also hardcoded meant for testing it out
+        if (eventList.isEmpty()) {
+            System.out.println("The list of events is empty");
+            Event event01 = new Event("Birthday Party", "123 Main Street", "Celebration", LocalDate.of(2024, 4, 15),
+                    "Join us for a fun-filled birthday celebration!");
+            Event event02 = new Event("Tech Conference", "456 Elm Street", "Conference", LocalDate.of(2024, 5, 20),
+                    "Explore the latest trends in technology at our annual conference.");
+            eventList.add(event01);
+            eventList.add(event02);
+
+        } else {
+            System.out.println("\n- LIST OF EVENTS -\n");
+            for (Event event : eventList) {
+                event.printEventInfo();
+                System.out.println("");
+            }
+        }
+    }
+
     public static void main(String[] args) {
         Scanner Obj = new Scanner(System.in);
-        String content;
-        System.out.println("What do you want to register? Type 1 for User and 2 for Event.");
+        System.out.println("Choose an option below:");
+        displayOptions(Obj);
+    }
+
+    private static void displayOptions(Scanner scanner) {
         while (true) {
-            content = Obj.nextLine();
-            if (content.equals("1")) {
-                User newUser = User.createUserFromInput();
-                System.out.println("\nUser Information:");
-                newUser.printUserInfo();
-            } else if (content.equals("2")) {
-                Event newEvent = Event.createEventFromInput();
-                newEvent.printEventInfo();
+            for (int i = 0; i < SHOW_OPTIONS.length; i++) {
+                System.out.println((i + 1) + ". " + SHOW_OPTIONS[i]);
             }
-            else {
-                System.out.println("Invalid input.  Type 1 for User and 2 for Event.");
+
+            int categoryIndex = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (categoryIndex) {
+                case 1:
+                    User newUser = User.createUserFromInput();
+                    userList.add(newUser);
+                    System.out.println("\nUser Information:");
+                    newUser.printUserInfo();
+                    break;
+                case 2:
+                    Event newEvent = Event.createEventFromInput();
+                    eventList.add(newEvent);
+                    newEvent.printEventInfo();
+                    break;
+                case 3:
+                    printUsers();
+                    break;
+                case 4:
+                    printEvents();
+                    break;
+                default:
+                    System.out.println("Invalid input. Type 1 for User and 2 for Event.");
             }
         }
     }
